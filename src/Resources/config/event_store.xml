@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <!-- invokables -->
+        <service id="Prooph\EventSourcing\EventStoreIntegration\AggregateTranslator"
+                 class="Prooph\EventSourcing\EventStoreIntegration\AggregateTranslator"/>
+
+        <!-- factories -->
+        <!-- event store service bus bridge -->
+        <service id="Prooph\EventStoreBusBridge\TransactionManager.factory" class="Prooph\EventStoreBusBridge\Container\TransactionManagerFactory"/>
+        <service id="Prooph\EventStoreBusBridge\TransactionManager" class="Prooph\EventStoreBusBridge\TransactionManager">
+            <factory service="Prooph\EventStoreBusBridge\TransactionManager.factory" method="__invoke"/>
+            <argument type="service" id="interop_container"/>
+        </service>
+        <service id="prooph.event_bus.transaction_manager" alias="Prooph\EventStoreBusBridge\TransactionManager"/>
+
+        <service id="Prooph\EventStoreBusBridge\EventPublisher.factory" class="Prooph\EventStoreBusBridge\Container\EventPublisherFactory"/>
+        <service id="Prooph\EventStoreBusBridge\EventPublisher" class="Prooph\EventStoreBusBridge\EventPublisher">
+            <factory service="Prooph\EventStoreBusBridge\EventPublisher.factory" method="__invoke"/>
+            <argument type="service" id="interop_container"/>
+        </service>
+        <service id="prooph.event_bus.event_publisher" alias="Prooph\EventStoreBusBridge\EventPublisher"/>
+
+        <!-- event store -->
+        <service id="Prooph\EventStore\EventStore.factory" class="Prooph\EventStore\Container\EventStoreFactory"/>
+        <service id="Prooph\EventStore\EventStore" class="Prooph\EventStore\EventStore">
+            <factory service="Prooph\EventStore\EventStore.factory" method="__invoke"/>
+            <argument type="service" id="interop_container"/>
+        </service>
+        <service id="prooph.event_store" alias="Prooph\EventStore\EventStore"/>
+
+        <service id="Prooph\EventStore\Adapter\Doctrine\DoctrineEventStoreAdapter.factory" class="Prooph\EventStore\Adapter\Doctrine\Container\DoctrineEventStoreAdapterFactory"/>
+        <service id="Prooph\EventStore\Adapter\Doctrine\DoctrineEventStoreAdapter" class="Prooph\EventStore\Adapter\Doctrine\DoctrineEventStoreAdapter">
+            <factory service="Prooph\EventStore\Adapter\Doctrine\DoctrineEventStoreAdapter.factory" method="__invoke"/>
+            <argument type="service" id="interop_container"/>
+        </service>
+        <service id="prooph.event_store.doctrine_adapter" alias="Prooph\EventStore\Adapter\Doctrine\DoctrineEventStoreAdapter"/>
+
+        <!-- Snapshotter -->
+        <service id="Prooph\EventStore\Snapshot\SnapshotStore.factory"
+                 class="Prooph\EventStore\Container\Snapshot\SnapshotStoreFactory"/>
+        <service id="Prooph\EventStore\Snapshot\SnapshotStore" class="Prooph\EventStore\Snapshot\SnapshotStore">
+            <factory service="Prooph\EventStore\Snapshot\SnapshotStore.factory" method="__invoke"/>
+            <argument type="service" id="interop_container"/>
+        </service>
+        <service id="prooph.event_store.snapshot_store" alias="Prooph\EventStore\Snapshot\SnapshotStore"/>
+
+        <service id="Prooph\Snapshotter\SnapshotPlugin.factory" class="Prooph\Snapshotter\Container\SnapshotPluginFactory"/>
+        <service id="Prooph\Snapshotter\SnapshotPlugin" class="Prooph\Snapshotter\SnapshotPlugin">
+            <factory service="Prooph\Snapshotter\SnapshotPlugin.factory" method="__invoke"/>
+            <argument type="service" id="interop_container"/>
+        </service>
+
+        <service id="Prooph\EventStore\Snapshot\Adapter\Doctrine\DoctrineSnapshotAdapter.factory" class="Prooph\EventStore\Snapshot\Adapter\Doctrine\Container\DoctrineSnapshotAdapterFactory"/>
+        <service id="Prooph\EventStore\Snapshot\Adapter\Doctrine\DoctrineSnapshotAdapter" class="Prooph\EventStore\Snapshot\Adapter\Doctrine\DoctrineSnapshotAdapter">
+            <factory service="Prooph\EventStore\Snapshot\Adapter\Doctrine\DoctrineSnapshotAdapter.factory" method="__invoke"/>
+            <argument type="service" id="interop_container"/>
+        </service>
+        <service id="prooph.event_store.doctrine_snapshot_adapter" alias="Prooph\EventStore\Snapshot\Adapter\Doctrine\DoctrineSnapshotAdapter"/>
+
+    </services>
+</container>
