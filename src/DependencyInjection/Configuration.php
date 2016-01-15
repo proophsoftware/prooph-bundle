@@ -8,6 +8,8 @@
  */
 namespace Prooph\Bundle\DependencyInjection;
 
+use Prooph\InteropBundle\Config\Definition\Builder\DynamicArrayNodeDefinition;
+use Symfony\Component\Config\Definition\Builder\NodeBuilder;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -23,8 +25,11 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
+        $nodeBuilder = new NodeBuilder();
+        $nodeBuilder->setNodeClass('dynamicArray', DynamicArrayNodeDefinition::class);
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('prooph');
+
+        $rootNode = $treeBuilder->root('prooph', 'dynamicArray', $nodeBuilder);
 
         // our factories handles validation and we are flexible with keys
         // Please take a look at the docs or specific prooph component factory for the configuration options
