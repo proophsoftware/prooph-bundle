@@ -29,6 +29,12 @@ $config = [
         ]
     ],
     'event_store' => [
+        'adapter' => [
+            'type' => 'Prooph\\EventStore\\Adapter\\Doctrine\\DoctrineEventStoreAdapter',
+            'options' => [
+                'connection_alias' => 'doctrine.dbal.default_connection', // Symfony Doctrine Bundle default
+            ],
+        ],
         'plugins' => [
             \Prooph\EventStoreBusBridge\EventPublisher::class,
             \Prooph\EventStoreBusBridge\TransactionManager::class,
@@ -39,7 +45,7 @@ $config = [
         'adapter' => [
             'type' => \Prooph\EventStore\Snapshot\Adapter\Doctrine\DoctrineSnapshotAdapter::class,
             'options' => [
-                'connection_alias' => 'database_connection', // Symfony Doctrine Bundle default
+                'connection_alias' => 'doctrine.dbal.default_connection', // Symfony Doctrine Bundle default
                 'snapshot_table_map' => [
                 ]
             ]
@@ -52,7 +58,7 @@ $config = [
     ],
 ];
 
-if (!isset($container) || ! $container instanceof \Symfony\Component\DependencyInjection\ContainerBuilder) {
+if (!isset($container) || !$container instanceof \Symfony\Component\DependencyInjection\ContainerBuilder) {
     return ['prooph' => $config];
 }
 $container->prependExtensionConfig('prooph', $config);
