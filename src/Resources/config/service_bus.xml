@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <!-- invokables -->
+        <service id="Prooph\ServiceBus\Plugin\InvokeStrategy\OnEventStrategy"
+                 class="Prooph\ServiceBus\Plugin\InvokeStrategy\OnEventStrategy"/>
+
+        <!-- factories -->
+        <service id="Prooph\ServiceBus\CommandBus.factory" class="Prooph\ServiceBus\Container\CommandBusFactory"/>
+        <service id="Prooph\ServiceBus\CommandBus" class="Prooph\ServiceBus\CommandBus">
+            <factory service="Prooph\ServiceBus\CommandBus.factory" method="__invoke"/>
+            <argument type="service" id="interop_container"/>
+        </service>
+        <service id="prooph.service_bus.command_bus" alias="Prooph\ServiceBus\CommandBus"/>
+
+        <service id="Prooph\ServiceBus\EventBus.factory" class="Prooph\ServiceBus\Container\EventBusFactory"/>
+        <service id="Prooph\ServiceBus\EventBus" class="Prooph\ServiceBus\EventBus">
+            <factory service="Prooph\ServiceBus\EventBus.factory" method="__invoke"/>
+            <argument type="service" id="interop_container"/>
+        </service>
+        <service id="prooph.service_bus.event_bus" alias="Prooph\ServiceBus\EventBus"/>
+
+        <!-- guards -->
+        <service id="Prooph\ServiceBus\Plugin\Guard\RouteGuard.factory"
+                 class="Prooph\ServiceBus\Container\Plugin\Guard\RouteGuardFactory"/>
+        <service id="Prooph\ServiceBus\Plugin\Guard\RouteGuard" class="Prooph\ServiceBus\Plugin\Guard\RouteGuard">
+            <factory service="Prooph\ServiceBus\Plugin\Guard\RouteGuard.factory" method="__invoke"/>
+            <argument type="service" id="interop_container"/>
+        </service>
+
+        <service id="Prooph\ServiceBus\Plugin\Guard\FinalizeGuard.factory"
+                 class="Prooph\ServiceBus\Container\Plugin\Guard\FinalizeGuardFactory"/>
+        <service id="Prooph\ServiceBus\Plugin\Guard\FinalizeGuard" class="Prooph\ServiceBus\Plugin\Guard\FinalizeGuard">
+            <factory service="Prooph\ServiceBus\Plugin\Guard\FinalizeGuard.factory" method="__invoke"/>
+            <argument type="service" id="interop_container"/>
+        </service>
+
+    </services>
+</container>
