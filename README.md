@@ -2,12 +2,15 @@
 
 ## Overview
 This is a Symfony bundle for prooph components to get started out of the box with message bus, CQRS, event sourcing and 
-snapshots with the Symfony Doctrine Bundle.
+snapshots with the Symfony Doctrine Bundle. It uses Doctrine DBAL. There are more adapters available.
 
 It provides all [service definitions and a default configuration](src/Resources/config "Symfony Bundle Resources"). 
-This is more like a Quick-Start bundle. If you want to use the prooph components in production, we recommended to use only
+This is more like a Quick-Start bundle. If you want to use the prooph components in production, we recommend to use only
 [prooph-interop-bundle](https://github.com/proophsoftware/prooph-interop-bundle) and configure the prooph components for
 your requirements. See the [documentation](http://getprooph.org/) for more details of the prooph components.
+
+For rapid prototyping we recommend to use our 
+[prooph-cli](https://github.com/proophsoftware/prooph-cli "prooph command line interface") tool.
 
 ### Available services
 * `prooph.service_bus.command_bus`: Dispatches commands
@@ -19,17 +22,71 @@ your requirements. See the [documentation](http://getprooph.org/) for more detai
 * `prooph.event_store.doctrine_snapshot_adapter`: Doctrine snapshot adapter
 
 ## Installation
+You can install `proophsoftware/prooph-bundle` via composer by adding `"proophsoftware/prooph-bundle": "^0.1"` as 
+requirement to your composer.json. 
 
-You can install prooph/prooph-bundle via composer by adding `"proophsoftware/prooph-bundle": "^0.1"` as requirement to 
-your composer.json. Setup your database [migrations](https://github.com/prooph/event-store-doctrine-adapter#database-set-up)
-for the Event Store.
+### Database 
+Setup your Doctrine database [migrations](https://github.com/prooph/event-store-doctrine-adapter#database-set-up)
+for the Event Store and Snapshot with:
+
+```bash
+$ php bin/console doctrine:migrations:generate
+```
+
+Update the generated migration class with prooph Doctrine event store schema helper:
+
+```php
+class Version20160202155238 extends AbstractMigration
+{
+    public function up(Schema $schema)
+    {
+        \Prooph\EventStore\Adapter\Doctrine\Schema\EventStoreSchema::createSingleStream($schema, 'event_stream', true);
+    }
+
+    public function down(Schema $schema)
+    {
+        \Prooph\EventStore\Adapter\Doctrine\Schema\EventStoreSchema::dropStream($schema, 'event_stream');
+    }
+}
+```
+
+And now for the snapshot table.
+
+```bash
+$ php bin/console doctrine:migrations:generate
+```
+
+Update the generated migration class with prooph Doctrine snapshot schema helper:
+
+```php
+class Version20160202160810 extends AbstractMigration
+{
+    public function up(Schema $schema)
+    {
+        \Prooph\EventStore\Snapshot\Adapter\Doctrine\Schema\SnapshotStoreSchema::create($schema, 'snapshot');
+    }
+
+    public function down(Schema $schema)
+    {
+        \Prooph\EventStore\Snapshot\Adapter\Doctrine\Schema\SnapshotStoreSchema::drop($schema, 'snapshot');
+    }
+}
+```
+
+Now it's time to execute the migrations:
+
+```bash
+$ php bin/console doctrine:migrations:migrate
+```
 
 ## Example
 You have only to define your models (Entities, Repositories) and commands/routes. You find all these things in the 
 [prooph components documentation](http://getprooph.org/ "prooph components documentation"). Here is an example YAML config
-from the [proophessor-do example app](https://github.com/prooph/proophessor-do "prooph components example app").
+from the [proophessor-do example app](https://github.com/prooph/proophessor-do "prooph components in action").
 
 > You have to use a single quote `'` in the YAML configuration
+
+Define the aggregate repository, command route and event route for `RegisterUser` in `app/config/config.yml`.
 
 ```yml
 prooph:
@@ -51,9 +108,11 @@ prooph:
       repository_class: 'Prooph\ProophessorDo\Infrastructure\Repository\EventStoreUserCollection'
       aggregate_type: 'Prooph\ProophessorDo\Model\User\User'
       aggregate_translator: 'Prooph\EventSourcing\EventStoreIntegration\AggregateTranslator'
+      snapshot_store: 'Prooph\EventStore\Snapshot\SnapshotStore'
 ```
 
-Here is an example of the corresponding service XML configuration with container-interop for the proophessor-do example.
+Add the service container factories. Here is an example of the corresponding service XML configuration with 
+container-interop for the example above.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -135,4 +194,4 @@ To establish a consistent code quality, please provide unit tests for all your c
 
 ## License
 
-Released under the [New BSD License](LICENSE).
+Released under the [New BSD License](LICENSE.md).

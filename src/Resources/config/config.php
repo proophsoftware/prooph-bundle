@@ -13,9 +13,9 @@ $config = [
             'router' => [
                 'routes' => [
                     \Prooph\Snapshotter\TakeSnapshot::class => \Prooph\Snapshotter\Snapshotter::class,
-                    // define your command routes here
-                ]
-            ]
+                    // list of commands with corresponding command handler
+                ],
+            ],
         ],
         'event_bus' => [
             'plugins' => [
@@ -25,8 +25,8 @@ $config = [
                 'routes' => [
                     // define your event routes/projectors here
                 ],
-            ]
-        ]
+            ],
+        ],
     ],
     'event_store' => [
         'adapter' => [
@@ -40,6 +40,7 @@ $config = [
             \Prooph\EventStoreBusBridge\TransactionManager::class,
             \Prooph\Snapshotter\SnapshotPlugin::class,
         ],
+        // list of aggregate repositories
     ],
     'snapshot_store' => [
         'adapter' => [
@@ -47,14 +48,16 @@ $config = [
             'options' => [
                 'connection_alias' => 'doctrine.dbal.default_connection', // Symfony Doctrine Bundle default
                 'snapshot_table_map' => [
-                ]
-            ]
-        ]
+                    // list of aggregate root => table (default is snapshot)
+                ],
+            ],
+        ],
     ],
     'snapshotter' => [
-        'version_step' => 5, //every 5 events a snapshot
+        'version_step' => 5, // every 5 events a snapshot
         'aggregate_repositories' => [
-        ]
+            // list of aggregate root => aggregate repositories
+        ],
     ],
 ];
 
