@@ -23,11 +23,26 @@ For rapid prototyping we recommend to use our
 
 ## Installation
 You can install `proophsoftware/prooph-bundle` via composer by adding `"proophsoftware/prooph-bundle": "^0.1"` as 
-requirement to your composer.json. 
+requirement to your composer.json.
+
+Finally, be sure to enable the following bundles in `AppKernel.php` by including the following:
+
+```
+// app/AppKernel.php
+public function registerBundles()
+{
+    $bundles = array(
+        //...
+        new Prooph\InteropBundle\ProophInteropBundle(),
+        new Prooph\Bundle\ProophBundle(),
+        new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
+    );
+}
+```
 
 ### Database 
 Setup your Doctrine database [migrations](https://github.com/prooph/event-store-doctrine-adapter#database-set-up)
-for the Event Store and Snapshot with:
+for the Event Store and Snapshot. This bundle uses the Doctrine Migrations Bundle.
 
 ```bash
 $ php bin/console doctrine:migrations:generate
