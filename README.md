@@ -1,5 +1,12 @@
 # Symfony bundle for prooph components
 
+## Deprecated
+
+Based on user feedback we've decided to start working on Symfony integration again. This bundle makes use of the interop-container aware factories shipped with each prooph component. However, using these factories in a Symfony environment works different than you know it from other bundles. If you are looking for real Symfony bundles check out:
+
+- https://github.com/prooph/event-store-symfony-bundle
+- https://github.com/prooph/service-bus-symfony-bundle
+
 ## Overview
 This is a Symfony bundle for prooph components to get started out of the box with message bus, CQRS, event sourcing and 
 snapshots with the Symfony Doctrine Bundle. It uses Doctrine DBAL. There are more adapters available.
